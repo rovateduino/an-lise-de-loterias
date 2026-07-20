@@ -5,7 +5,16 @@ import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 import { gerarFechamento, selecionarGrupoTipico, obterEstatisticasJogo, verificarCobertura } from "./src/lib/lottery.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Fix __dirname para CJS/ESM compatível
+declare const __dirname: string;
+declare const __filename: string;
+let currentFilename: string;
+try {
+  currentFilename = __filename;
+} catch {
+  currentFilename = fileURLToPath(import.meta.url);
+}
+const dirname = path.dirname(currentFilename);
 
 const lotteryFunctions: Record<string, Function> = {
   obter_estatisticas_jogo: obterEstatisticasJogo,
@@ -16,7 +25,7 @@ const lotteryFunctions: Record<string, Function> = {
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = Number(process.env.PORT) || 3000;
   
   app.use(express.json());
 
@@ -81,7 +90,7 @@ async function startServer() {
     try {
       const response = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${apiName}`);
       if (!response.ok) throw new Error("API unavailable");
-      const data = await response.json();
+      const data = (await response.json()) as any[];
       // Get last N entries
       const recentes = data.slice(-num);
       res.json(recentes);
@@ -131,7 +140,7 @@ async function startServer() {
       if (response.status === 401 || response.status === 403) return res.status(401).json({ error: "Chave inválida para este provedor" });
       if (response.status === 429) return res.status(429).json({ error: "Limite de requisições excedido, tente novamente em instantes" });
       
-      const data = await response.json();
+      const data = await response.json() as any;
       
       // Handle tool calls
       let toolCalls = provider === "google" ? data.candidates?.[0]?.content?.parts?.[0]?.functionCall : data.choices?.[0]?.message?.tool_calls;
@@ -154,9 +163,9 @@ async function startServer() {
 
       let text = "";
       if (provider === "google") {
-        text = data.candidates[0].content.parts[0].text;
+        text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
       } else {
-        text = data.choices[0].message.content;
+        text = data.choices?.[0]?.message?.content || "";
       }
       res.json({ text });
     } catch (error) {
@@ -172,7 +181,7 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(__dirname, 'dist');
+    const distPath = path.join(dirname, 'dist');
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
