@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
 interface Props {
   userMessage: string;
   context: any;
@@ -21,7 +23,7 @@ export default function AIExplanation({ userMessage, context }: Props) {
     }
 
     try {
-      const response = await fetch('/api/ai/query', {
+      const response = await fetch(`${API_BASE_URL}/api/ai/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,15 +49,15 @@ export default function AIExplanation({ userMessage, context }: Props) {
       <button 
         onClick={explain} 
         disabled={loading || !config.apiKey}
-        className="bg-indigo-100 text-indigo-700 py-2 px-4 rounded-md text-sm font-medium hover:bg-indigo-200 disabled:opacity-50"
+        className="w-full md:w-auto py-3 bg-blue-electric/10 text-blue-electric px-6 rounded-xl text-sm font-bold hover:bg-blue-electric/20 disabled:opacity-50 transition-colors min-h-[44px]"
       >
         {loading ? 'Pensando...' : 'Explicar com IA'}
       </button>
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {error && <p className="text-red-alert text-sm mt-3">{error}</p>}
       {explanation && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-md border-l-4 border-indigo-500">
-          <h4 className="font-semibold text-gray-900 mb-1">Explicação da IA:</h4>
-          <p className="text-sm text-gray-700">{explanation}</p>
+        <div className="mt-4 p-4 bg-bg-panel rounded-xl border-l-4 border-blue-electric shadow-[0_4px_6px_rgba(0,0,0,0.1),0_1px_3px_rgba(0,0,0,0.08)]">
+          <h4 className="font-bold text-text-primary mb-2 font-display">Explicação da IA:</h4>
+          <p className="text-sm text-text-muted leading-relaxed">{explanation}</p>
         </div>
       )}
     </div>

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
 type ResumoData = {
   loteria: string;
   concurso: number;
@@ -19,7 +21,7 @@ export default function ResumoSorteio({ jogoId }: { jogoId: string }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/loteria/${jogoId}/resumo`)
+    fetch(`${API_BASE_URL}/api/loteria/${jogoId}/resumo`)
       .then(res => {
         if (!res.ok) throw new Error();
         return res.json();
@@ -58,7 +60,7 @@ export default function ResumoSorteio({ jogoId }: { jogoId: string }) {
             Último sorteio: {data.data}
           </span>
           {data.acumulou ? (
-            <span className="px-2 py-0.5 text-xs font-bold rounded bg-orange-signal text-bg-void">
+            <span className="px-3 py-1 text-xs font-bold rounded-full bg-orange-signal text-bg-void">
               ACUMULOU
             </span>
           ) : (
@@ -69,7 +71,7 @@ export default function ResumoSorteio({ jogoId }: { jogoId: string }) {
           {data.dezenas.map((d, i) => (
             <span
               key={i}
-              className="w-8 h-8 flex items-center justify-center bg-bg-void rounded-full font-mono text-sm border border-blue-electric text-text-primary"
+              className="w-9 h-9 flex items-center justify-center bg-bg-void rounded-full font-mono text-sm border border-blue-electric text-text-primary"
             >
               {d}
             </span>
@@ -80,7 +82,7 @@ export default function ResumoSorteio({ jogoId }: { jogoId: string }) {
               {data.trevos.map((t, i) => (
                 <span
                   key={`trevo-${i}`}
-                  className="w-8 h-8 flex items-center justify-center bg-bg-void rounded-full font-mono text-sm border border-red-alert text-text-primary"
+                  className="w-9 h-9 flex items-center justify-center bg-bg-void rounded-full font-mono text-sm border border-red-alert text-text-primary"
                 >
                   {t}
                 </span>
@@ -91,12 +93,12 @@ export default function ResumoSorteio({ jogoId }: { jogoId: string }) {
       </div>
 
       {/* Próximo sorteio */}
-      <div className="space-y-1 pt-2 border-t border-bg-void">
+      <div className="space-y-1 pt-3 border-t border-bg-void">
         <div className="text-sm text-text-primary">
           Próximo sorteio: {data.dataProximoConcurso}
         </div>
-        <div className="text-lg font-bold text-green-verified">
-          Estimativa: {formatCurrency(data.valorEstimadoProximoConcurso)}
+        <div className="text-xl md:text-2xl font-bold text-green-verified font-mono">
+          {formatCurrency(data.valorEstimadoProximoConcurso)}
         </div>
       </div>
     </div>

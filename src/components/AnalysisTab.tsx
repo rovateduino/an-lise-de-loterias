@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import AIExplanation from './AIExplanation';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
 type Game = 'mega_sena' | 'quina' | 'lotofacil' | 'mais_milionaria';
 type ConcursoData = {
   concurso: number;
@@ -21,7 +23,7 @@ export default function AnalysisTab() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/loteria/${game}`)
+    fetch(`${API_BASE_URL}/api/loteria/${game}`)
       .then(res => res.json())
       .then(data => {
         setData(Object.values(data));
@@ -31,7 +33,7 @@ export default function AnalysisTab() {
 
   useEffect(() => {
     setLoadingRecentes(true);
-    fetch(`/api/loteria/${game}/recentes?n=5`)
+    fetch(`${API_BASE_URL}/api/loteria/${game}/recentes?n=5`)
       .then(res => {
         if (!res.ok) throw new Error();
         return res.json();
@@ -67,11 +69,10 @@ export default function AnalysisTab() {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold text-gray-900">Análise Histórica</h2>
       <select 
         value={game} 
         onChange={(e) => setGame(e.target.value as Game)}
-        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+        className="w-full pl-4 pr-10 py-3 text-base border border-bg-void bg-bg-panel text-text-primary rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-electric"
       >
         <option value="mega_sena">Mega-Sena</option>
         <option value="quina">Quina</option>
@@ -80,41 +81,41 @@ export default function AnalysisTab() {
       </select>
 
       {/* Últimos Sorteios */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Últimos Sorteios</h3>
+      <div className="bg-bg-panel p-6 rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.1),0_1px_3px_rgba(0,0,0,0.08)]">
+        <h3 className="text-lg font-medium leading-6 text-text-primary mb-4 font-display">Últimos Sorteios</h3>
         {loadingRecentes ? (
-          <div className="text-center py-4">Carregando...</div>
+          <div className="text-center py-4 text-text-muted">Carregando...</div>
         ) : recentes.length === 0 ? (
-          <div className="text-center py-4 text-gray-500">Resultados indisponíveis no momento</div>
+          <div className="text-center py-4 text-text-muted">Resultados indisponíveis no momento</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="overflow-x-auto rounded-lg border border-bg-void">
+            <table className="min-w-full divide-y divide-bg-void">
+              <thead className="bg-bg-void">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Concurso</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dezenas</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acumulou</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prêmio Principal</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Concurso</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Data</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Dezenas</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Acumulou</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">Prêmio</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-bg-panel divide-y divide-bg-void">
                 {recentes.slice().reverse().map((concurso, index) => (
                   <tr key={concurso.concurso}>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{concurso.concurso}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{concurso.data}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-text-primary font-mono">{concurso.concurso}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-text-muted">{concurso.data}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-text-primary">
                       <div className="flex flex-wrap gap-1">
                         {concurso.dezenas.map((d, i) => (
-                          <span key={i} className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded-full text-xs font-mono">
+                          <span key={i} className="w-7 h-7 flex items-center justify-center bg-bg-void rounded-full text-xs font-mono border border-blue-electric">
                             {d}
                           </span>
                         ))}
                         {concurso.trevos && concurso.trevos.length > 0 && (
                           <>
-                            <span className="text-xs text-gray-400">Trevos:</span>
+                            <span className="text-xs text-text-muted self-center ml-2">Trevos:</span>
                             {concurso.trevos.map((t, i) => (
-                              <span key={`trevo-${i}`} className="w-6 h-6 flex items-center justify-center bg-red-100 rounded-full text-xs font-mono">
+                              <span key={`trevo-${i}`} className="w-7 h-7 flex items-center justify-center bg-bg-void rounded-full text-xs font-mono border border-red-alert">
                                 {t}
                               </span>
                             ))}
@@ -122,10 +123,14 @@ export default function AnalysisTab() {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                      {concurso.acumulou ? 'Sim' : 'Não'}
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-text-muted">
+                      {concurso.acumulou ? (
+                        <span className="text-orange-signal font-bold">Sim</span>
+                      ) : (
+                        <span>Não</span>
+                      )}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-text-primary font-mono">
                       {formatCurrency(concurso.premiacoes[0]?.valorPremio)}
                     </td>
                   </tr>
@@ -138,22 +143,31 @@ export default function AnalysisTab() {
 
       {/* Frequência das Dezenas */}
       {loading ? (
-        <div className="text-center py-10">Carregando...</div>
+        <div className="text-center py-10 text-text-muted">Carregando...</div>
       ) : (
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Frequência das Dezenas</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="freq" fill="#4f46e5" />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="bg-bg-panel p-6 rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.1),0_1px_3px_rgba(0,0,0,0.08)]">
+          <h3 className="text-lg font-medium leading-6 text-text-primary mb-4 font-display">Frequência das Dezenas</h3>
+          <div className="h-64 md:h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData}>
+                <XAxis dataKey="name" stroke="#8A8FA3" />
+                <YAxis stroke="#8A8FA3" />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#14141C', 
+                    border: '1px solid #0A0A0F',
+                    borderRadius: '8px',
+                    color: '#F4F5F7'
+                  }} 
+                />
+                <Bar dataKey="freq" fill="#2B6CFF" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
       <AIExplanation userMessage="Explique os padrões de frequência observados nestes dados." context={chartData} />
-      <p className="text-sm text-gray-500 italic">Nota: Estes números são apenas descritivos do histórico recente e não constituem previsões.</p>
+      <p className="text-sm text-text-muted italic">Nota: Estes números são apenas descritivos do histórico recente e não constituem previsões.</p>
     </div>
   );
 }
