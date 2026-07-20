@@ -1,0 +1,6 @@
+{
+  "name": "Análise de Loterias",
+  "description": "Ferramenta de análise histórica e geração de fechamentos matemáticos para loterias da Caixa, baseada em combinatória aplicada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,19 @@
+/*
+* Design Plan: Arena Night (Vibrant Sporty)
+* Concepts: Void/Electric Night (#0A0A0F, #14141C).
+* Palette: Blue-Electric (#2B6CFF) for interactions, Orange-Signal (#FF6B1A) for CTA, Green-Verified (#22C55E) for Proof.
+* Type: Archivo Black (Display), Manrope (Body), JetBrains Mono (Dezenas).
+* Layout: Arena-night aesthetic, Betting-slip cards with 8px radius/Blue top-bar, Monospaced chip-chips.
+* Signature: "SeloGarantia" with Verified-Green background, real-time math-proof counts.
+*/
+
+:root {
+  --bg-void: #0A0A0F;
+  --bg-panel: #14141C;
+  --blue-electric: #2B6CFF;
+  --orange-signal: #FF6B1A;
+  --green-verified: #22C55E;
+  --red-alert: #FF3B3B;
+  --text-primary: #F4F5F7;
+  --text-muted: #8A8FA3;
+}
