@@ -1,7 +1,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import fetch from 'node-fetch';
-import { gerarFechamento, selecionarGrupoTipico, obterEstatisticasJogo, verificarCobertura } from '../../src/lib/lottery.js';
+import { gerarFechamento, selecionarGrupoTipico, obterEstatisticasJogo, verificarCobertura } from '../../src/lib/lottery';
 
 const lotteryFunctions: Record<string, Function> = {
   obter_estatisticas_jogo: obterEstatisticasJogo,
