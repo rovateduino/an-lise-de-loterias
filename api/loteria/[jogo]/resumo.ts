@@ -1,6 +1,5 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import fetch from 'node-fetch';
 
 const jogoToApiName: Record<string, string> = {
   "mega_sena": "megasena",
